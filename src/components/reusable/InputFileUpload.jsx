@@ -15,9 +15,10 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-export default function InputFileUpload() {
+export default function InputFileUpload({ handleFileUpload }) {
   return (
     <Button
+      onChange={handleFileUpload}
       sx={{
         backgroundColor: '#191A1A',
         color: '#FFFFFF',
