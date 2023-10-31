@@ -58,8 +58,11 @@ export function createAndDownloadExcelFile(targetZipCodes, zipCodes, radius) {
     // Create a new worksheet from the data
     const ws = XLSX.utils.aoa_to_sheet(data);
 
-    // Add the worksheet to the workbook
-    XLSX.utils.book_append_sheet(wb, ws, String(targetZipCode.zip));
+    // Add the worksheet to the workbook if it doesn't already exist
+    const sheetName = String(targetZipCode.zip);
+    if (!wb.SheetNames.includes(sheetName)) {
+      XLSX.utils.book_append_sheet(wb, ws, sheetName);
+    }
   });
 
   // Write the workbook to a binary string

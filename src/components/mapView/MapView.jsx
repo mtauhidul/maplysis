@@ -2,11 +2,14 @@ import * as turf from '@turf/turf';
 import mapboxgl from 'mapbox-gl';
 import React from 'react';
 
-const MapView = ({ dataPoints, targetDataPoints }) => {
+const MapView = ({ dataPoints, targetDataPoints, radius }) => {
+  console.log('dataPoints', dataPoints);
+  console.log('targetDataPoints', targetDataPoints);
+  console.log('radius', radius);
   const mapContainer = React.useRef(null);
   const [lng, setLng] = React.useState(-101.79547);
   const [lat, setLat] = React.useState(35.23074);
-  const [zoom, setZoom] = React.useState(9);
+  const [zoom, setZoom] = React.useState(5);
 
   React.useEffect(() => {
     mapboxgl.accessToken =
@@ -60,7 +63,7 @@ const MapView = ({ dataPoints, targetDataPoints }) => {
         el.style.display = 'flex';
         el.style.justifyContent = 'center';
         el.style.alignItems = 'center';
-        el.innerText = zipCode.dre;
+        el.innerText = zipCode.dre || '*';
 
         // Use the custom HTML element as the marker
         const marker = new mapboxgl.Marker(el)
@@ -79,7 +82,7 @@ const MapView = ({ dataPoints, targetDataPoints }) => {
             units: 'miles',
             properties: { fill: color },
           };
-          const circle = turf.circle(center, 10, options);
+          const circle = turf.circle(center, radius, options);
 
           // Add the circle layer
           map.addLayer({
@@ -113,7 +116,7 @@ const MapView = ({ dataPoints, targetDataPoints }) => {
     });
 
     return () => map.remove();
-  }, []);
+  }, [dataPoints, targetDataPoints]);
 
   return (
     <div>

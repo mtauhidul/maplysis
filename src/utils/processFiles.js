@@ -18,7 +18,7 @@ export const processFiles = (rows) => {
 
   const targetData = rows.slice(1).map((row) => {
     return {
-      target: row[targetIndex],
+      zip: row[targetIndex],
     };
   });
 

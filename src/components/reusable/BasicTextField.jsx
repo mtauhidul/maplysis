@@ -22,6 +22,8 @@ export default function BasicTextField({ label, value, onChange, type }) {
         }}
         id='filled-basic'
         label={label}
+        value={value}
+        onChange={onChange}
         variant='filled'
         type={type}
       />
