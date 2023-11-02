@@ -1,6 +1,10 @@
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
 
+function deg2rad(deg) {
+  return deg * (Math.PI / 180);
+}
+
 function calculateDistance(lat1, lon1, lat2, lon2) {
   const R = 3958.8; // Radius of the earth in miles
   const dLat = deg2rad(lat2 - lat1);
@@ -16,12 +20,7 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
   return distance;
 }
 
-function deg2rad(deg) {
-  return deg * (Math.PI / 180);
-}
-
 function calculateZipCodesUnderRadius(targetZipCode, zipCodes, radius) {
-  const radiusInMiles = radius / 1.60934;
   return zipCodes.filter((zipCode) => {
     const distance = calculateDistance(
       targetZipCode.lat,
@@ -29,8 +28,8 @@ function calculateZipCodesUnderRadius(targetZipCode, zipCodes, radius) {
       zipCode.lat,
       zipCode.lng
     );
-    console.log(distance, radiusInMiles);
-    return distance <= radiusInMiles;
+    console.log(distance, radius);
+    return distance <= radius;
   });
 }
 
