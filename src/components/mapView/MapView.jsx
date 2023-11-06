@@ -3,9 +3,6 @@ import mapboxgl from 'mapbox-gl';
 import React from 'react';
 
 const MapView = ({ dataPoints, targetDataPoints, radius }) => {
-  console.log('dataPoints', dataPoints);
-  console.log('targetDataPoints', targetDataPoints);
-  console.log('radius', radius);
   const mapContainer = React.useRef(null);
   const [lng, setLng] = React.useState(-101.79547);
   const [lat, setLat] = React.useState(35.23074);

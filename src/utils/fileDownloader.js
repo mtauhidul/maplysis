@@ -21,16 +21,17 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 }
 
 function calculateZipCodesUnderRadius(targetZipCode, zipCodes, radius) {
-  return zipCodes.filter((zipCode) => {
-    const distance = calculateDistance(
-      targetZipCode.lat,
-      targetZipCode.lng,
-      zipCode.lat,
-      zipCode.lng
-    );
-    console.log(distance, radius);
-    return distance <= radius;
-  });
+  return zipCodes
+    .map((zipCode) => {
+      const distance = calculateDistance(
+        targetZipCode.lat,
+        targetZipCode.lng,
+        zipCode.lat,
+        zipCode.lng
+      );
+      return { ...zipCode, distance };
+    })
+    .filter((zipCode) => zipCode.distance <= radius);
 }
 
 export function createAndDownloadExcelFile(targetZipCodes, zipCodes, radius) {
@@ -49,10 +50,11 @@ export function createAndDownloadExcelFile(targetZipCodes, zipCodes, radius) {
     const data = zipCodesUnderRadius.map((zipCode) => [
       zipCode.zip,
       zipCode.dre,
+      zipCode.distance,
     ]);
 
     // Add a header row
-    data.unshift(['Zip Code', 'DRE']);
+    data.unshift(['Zip Code', 'DRE', 'Distance']);
 
     // Create a new worksheet from the data
     const ws = XLSX.utils.aoa_to_sheet(data);

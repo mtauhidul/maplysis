@@ -93,8 +93,6 @@ const Sidebar = (props) => {
     setLatAndLng(filteredDataWithLatLng);
     setMapData(filteredDataWithLatLng);
 
-    console.log(targetFilteredData);
-
     const targetPromises = targetFilteredData.map(async (row) => {
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${row.zip}&key=AIzaSyCOGSsKzlKCe3BNTwbL2bjO1SYV4eU8H64`
@@ -120,19 +118,14 @@ const Sidebar = (props) => {
     setTargetLatAndLng(filteredTargetDataWithLatLng);
     setTargetMapData(filteredTargetDataWithLatLng);
 
-    console.log(filteredTargetDataWithLatLng);
-
     setWorking(false);
   };
 
   const handleFileUpload = (e) => {
-    console.log(e.target.files[0]);
     const file = e.target.files[0];
     readXlsxFile(file).then((rows) => {
       const result = processFiles(rows);
       setFileName(file.name);
-
-      console.log(result);
 
       setDataPoints(result.data);
       setTargetDataPoints(result.targetData);
