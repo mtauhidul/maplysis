@@ -46,8 +46,16 @@ export function createAndDownloadExcelFile(targetZipCodes, zipCodes, radius) {
       radius
     );
 
+    // Remove zip code from the array if it's same to the target zip code (it's not a neighbor) so it's distance is 0 (zero)
+    const filteredZipCodesUnderRadius = zipCodesUnderRadius.filter(
+      (zipCode) => zipCode.zip !== targetZipCode.zip
+    );
+
+    // Sort the zip codes by distance (ascending)
+    filteredZipCodesUnderRadius.sort((a, b) => a.distance - b.distance);
+
     // Convert the data to a 2D array
-    const data = zipCodesUnderRadius.map((zipCode) => [
+    const data = filteredZipCodesUnderRadius.map((zipCode) => [
       zipCode.zip,
       zipCode.dre,
       zipCode.distance,

@@ -21,6 +21,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { styled } from '@mui/material/styles';
 import { createAndDownloadExcelFile } from '../../utils/fileDownloader';
 import { processFiles } from '../../utils/processFiles';
+import { targetZipCodesFinder } from '../../utils/targetZipFinder';
 import MapView from '../mapView/MapView';
 import BasicButton from '../reusable/BasicButton';
 import BasicLabel from '../reusable/BasicLabel';
@@ -47,6 +48,7 @@ const Sidebar = (props) => {
   const [dataPoints, setDataPoints] = useState([]);
   const [targetDataPoints, setTargetDataPoints] = useState([]);
   const [radius, setRadius] = useState(10);
+  const [minValue, setMinValue] = useState(40);
   const [working, setWorking] = useState(false);
   const [latAndLng, setLatAndLng] = useState([]);
   const [targetLatAndLng, setTargetLatAndLng] = useState([]);
@@ -65,11 +67,28 @@ const Sidebar = (props) => {
       return row.zip !== null && row.dre !== null;
     });
 
-    const targetFilteredData = targetDataPoints.filter((row) => {
-      return row.zip !== null && row.zip !== undefined;
-    });
+    // Remove duplicates in a way that if zip codes are same check if their dre is same too if not then keep the higher dre one
 
-    const promises = filteredData.map(async (row) => {
+    const duplicatesRemovedData = filteredData.reduce((acc, current) => {
+      const x = acc.find((item) => item.zip === current.zip);
+      if (!x) {
+        return acc.concat([current]);
+      } else {
+        if (x.dre < current.dre) {
+          return acc
+            .filter((item) => item.zip !== current.zip)
+            .concat([current]);
+        } else {
+          return acc;
+        }
+      }
+    }, []);
+
+    // const targetFilteredData = targetDataPoints.filter((row) => {
+    //   return row.zip !== null && row.zip !== undefined;
+    // });
+
+    const promises = duplicatesRemovedData.map(async (row) => {
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${row.zip}&key=AIzaSyCOGSsKzlKCe3BNTwbL2bjO1SYV4eU8H64`
       );
@@ -93,30 +112,29 @@ const Sidebar = (props) => {
     setLatAndLng(filteredDataWithLatLng);
     setMapData(filteredDataWithLatLng);
 
-    const targetPromises = targetFilteredData.map(async (row) => {
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${row.zip}&key=AIzaSyCOGSsKzlKCe3BNTwbL2bjO1SYV4eU8H64`
-      );
+    // const targetPromises = targetFilteredData.map(async (row) => {
+    //   const response = await fetch(
+    //     `https://maps.googleapis.com/maps/api/geocode/json?address=${row.zip}&key=AIzaSyCOGSsKzlKCe3BNTwbL2bjO1SYV4eU8H64`
+    //   );
 
-      const data = await response.json();
+    //   const data = await response.json();
 
-      return {
-        zip: row.zip,
-        lat: data.results[0]?.geometry.location.lat,
-        lng: data.results[0]?.geometry.location.lng,
-      };
-    });
+    //   return {
+    //     zip: row.zip,
+    //     lat: data.results[0]?.geometry.location.lat,
+    //     lng: data.results[0]?.geometry.location.lng,
+    //   };
+    // });
 
-    const newTargetDataWithLatLng = await Promise.all(targetPromises);
+    // const newTargetDataWithLatLng = filteredDataWithLatLng;
 
-    const filteredTargetDataWithLatLng = newTargetDataWithLatLng.filter(
-      (row) => {
-        return row.lat !== undefined && row.lng !== undefined;
-      }
+    const targetZipCodes = targetZipCodesFinder(
+      filteredDataWithLatLng,
+      radius,
+      minValue
     );
-
-    setTargetLatAndLng(filteredTargetDataWithLatLng);
-    setTargetMapData(filteredTargetDataWithLatLng);
+    setTargetLatAndLng(targetZipCodes);
+    setTargetMapData(targetZipCodes);
 
     setWorking(false);
   };
@@ -215,12 +233,23 @@ const Sidebar = (props) => {
             {fileName}
           </Typography>
         )}
-        <BasicLabel label='Input radius (Miles)' />
-        <BasicTextField
-          label='Radius'
-          value={radius}
-          onChange={(e) => setRadius(e.target.value)}
-        />
+
+        {!mapData.length > 0 && (
+          <>
+            <br />
+            <BasicLabel label='Radius (miles)' />
+            <BasicTextField
+              value={radius}
+              onChange={(e) => setRadius(e.target.value)}
+            />
+            <br />
+            <BasicLabel label='Minimum Value' />
+            <BasicTextField
+              value={minValue}
+              onChange={(e) => setMinValue(e.target.value)}
+            />
+          </>
+        )}
 
         <br />
         {fileName !== '' && mapData.length === 0 && (

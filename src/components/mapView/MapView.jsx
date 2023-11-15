@@ -45,7 +45,11 @@ const MapView = ({ dataPoints, targetDataPoints, radius }) => {
 
         let color;
         if (isTarget) {
-          color = '#' + Math.floor(Math.random() * 16777215).toString(16);
+          color =
+            '#' +
+            Math.floor(Math.random() * 16777215)
+              .toString(16)
+              .padStart(6, '0');
         } else {
           color = '#fff';
         }
