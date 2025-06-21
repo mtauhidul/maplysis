@@ -1,8 +1,43 @@
-# React + Vite
+# 📍 Maplysis – Geo Data Analysis Tool
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Maplysis is a web-based geo data analysis tool that helps organizations make smarter, location-based decisions. Upload your Excel or CSV data, set your parameters, and visualize optimal target zones instantly on an interactive map.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🔧 What It Does
+
+- Upload location datasets (CSV/Excel)
+- Apply radius and patient count filters
+- Run a proximity-based clustering algorithm
+- Visualize results on Google Maps
+- Export a detailed report as Excel
+
+---
+
+## 💡 Example Use Case
+
+An NGO planning medical camps can:
+1. Upload zip code + patient count data  
+2. Set a 10-mile radius and threshold  
+3. Instantly see best zones on a map  
+4. Download a report with actionable insights
+
+---
+
+## ⚙️ Tech Stack
+
+- **Frontend**: React + Material UI  
+- **Mapping**: Google Maps API  
+- **Data Handling**: JavaScript clustering algorithm  
+- **Deployment**: Vercel
+
+---
+
+## 🚀 Live Demo
+
+🔗 [Launch Maplysis](https://www.maplysis.com)
+🧪 Sample file: [Download Excel Template](#)
+
+---
+
+Built with care by [Mir Tauhidul Islam](https://mirtauhid.com)
